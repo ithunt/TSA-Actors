@@ -1,5 +1,8 @@
 import akka.actor.UntypedActor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author ian hunt
  * @date 2/8/12
@@ -11,8 +14,22 @@ import akka.actor.UntypedActor;
 public class Jail extends UntypedActor{
     
     final int securityStations;
+    final List<Passenger> inmates = new ArrayList<Passenger>();
+    
+    private int closeReceived = 0;
 
     public Jail(int securityStations) {
         this.securityStations = securityStations;
+    }
+
+    public void onReceive(final Object message) {
+        if(message instanceof Passenger)
+            inmates.add((Passenger)message);
+        if(message instanceof Close) {
+            closeReceived++;
+            if(closeReceived == securityStations)
+                getContext().stop();
+
+        }
     }
 }
