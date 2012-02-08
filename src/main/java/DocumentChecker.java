@@ -1,5 +1,5 @@
 import akka.actor.UntypedActor;
-
+import static java.lang.Math.* ;
 import java.util.List;
 
 /**
@@ -16,7 +16,36 @@ public class DocumentChecker extends UntypedActor {
 
     final List<Queue> lineQueues;
 
+	private int i = 0;
+	
     public DocumentChecker(List<Queue> lineQueues) {
         this.lineQueues = lineQueues;
     }
+	
+	public void onReceive(final Object message)
+	{
+		if(message instanceof Passenger)
+		{
+			if((int)(random() * 100) <=20)
+			{
+				System.out.println("Passenger: " + (Passenger)message.name + "has been sent away");
+			}
+			else
+			{
+				System.out.println("Passenger: " + (Passenger)message.name + "has passed Document Check");
+				lineQueues[i % lineQueues.size()].tell(message);
+				i++;
+			}
+			
+			
+		}
+		else if(message instanceof Close)
+		{
+			for(Queue q : lineQueues)
+			{
+				q.tell(message);
+			}
+			this.getContext.stop();
+		}
+	}
 }
