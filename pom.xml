@@ -4,16 +4,26 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
+    <groupId>TSA-Actors</groupId>
     <artifactId>TSA-Actors</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+
     <dependencies>
         <dependency>
             <groupId>se.scalablesolutions.akka</groupId>
             <artifactId>akka-actor</artifactId>
-            <version>1.3-RC7</version>
+            <version>1.2</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>akka.repository</id>
+            <name>Akka Maven Repository</name>
+            <url>http://akka.io/repository</url>
+        </repository>
+    </repositories>
 
 
 </project>
