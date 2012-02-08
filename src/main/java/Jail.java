@@ -29,7 +29,6 @@ public class Jail extends UntypedActor{
             closeReceived++;
             if(closeReceived == securityStations)
                 getContext().stop();
-
         }
     }
 }

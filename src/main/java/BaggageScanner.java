@@ -12,13 +12,13 @@ import akka.actor.UntypedActor;
  * the message contains the passenger and the result of the scan/inspection.
  * When a “close” message is received, it is sent on to the security station and the baggage scan actor stops itself.
  */
-public class BaggageScanner extends UntypedActor{
-    
-    final int index;
-    final ActorRef securityStation;
-
+public class BaggageScanner extends Scanner{
     public BaggageScanner(int index, ActorRef securityStation) {
-        this.index = index;
-        this.securityStation = securityStation;
+        super(index, securityStation);
+    }
+
+    @Override
+    String getPrintableMessage() {
+        return null;
     }
 }
