@@ -16,11 +16,14 @@ public abstract class Scanner extends UntypedActor {
     }
     
     public void onReceive(final Object message) {
+        //print i recieved something
         if(message instanceof Passenger) {
             if(Math.random() >= FAIL_PROBABILITY) {
+                //print i passed it
                 securityStation.tell(
                         new Report((Passenger)message, true));
             } else {
+                //print i failed it
                 securityStation.tell(
                         new Report((Passenger)message, false));
             }
