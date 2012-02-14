@@ -35,4 +35,6 @@ public abstract class Scanner extends UntypedActor {
     }
     
     abstract String getPrintableMessage();
+    protected abstract void performPostScan();
+
 }
