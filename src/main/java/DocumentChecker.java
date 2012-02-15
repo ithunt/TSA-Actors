@@ -1,3 +1,4 @@
+import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import static java.lang.Math.* ;
 import java.util.List;
@@ -14,11 +15,11 @@ import java.util.List;
  */
 public class DocumentChecker extends UntypedActor {
 	
-    final List<Queue> lineQueues;
+    final List<ActorRef> lineQueues;
 	
 	private int i = 0;
 	
-    public DocumentChecker(List<Queue> lineQueues) {
+    public DocumentChecker(List<ActorRef> lineQueues) {
         this.lineQueues = lineQueues;
     }
 	
@@ -28,12 +29,12 @@ public class DocumentChecker extends UntypedActor {
 		{
 			if((int)(random() * 100) <=20) //20% chance to be sent away
 			{
-				System.out.println("Passenger: " + (Passenger)message.name + "has been sent away");
+				System.out.println("Passenger: " + ((Passenger) message).name + "has been sent away");
 			}
 			else
 			{
-				System.out.println("Passenger: " + (Passenger)message.name + "has passed Document Check");
-				lineQueues[i % lineQueues.size()].tell(message);
+				System.out.println("Passenger: " + ((Passenger) message).name + "has passed Document Check");
+				lineQueues.get(i % lineQueues.size()).tell(message);
 				i++;
 			}
 			
@@ -41,11 +42,11 @@ public class DocumentChecker extends UntypedActor {
 		}
 		else if(message instanceof Close)
 		{
-			for(Queue q : lineQueues)
+			for(ActorRef q : lineQueues)
 			{
 				q.tell(message);
 			}
-			this.getContext.stop();
+            getContext().stop();
 		}
 	}
 }

@@ -24,7 +24,7 @@ public class BodyScanner extends Scanner {
 
 	@Override
 	protected void performPostScan() {
-		parentQueue.tell(new Next);
+		parentQueue.tell(new Next());
 	}
 
 

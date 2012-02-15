@@ -1,7 +1,8 @@
-import java.util.LinkedList;
-
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author ian hunt
@@ -24,9 +25,13 @@ public class Queue extends UntypedActor {
     
     final int index;
     final ActorRef baggageScanner;
-    final ActorRef bodyScanner;
+    
+    ActorRef bodyScanner;
     protected boolean scannerReady;
-    protected LinkedList<Passenger> waitQueue;
+    //Using linked list to use remove() method without parameters
+    protected LinkedList<Object> waitQueue;
+    
+    protected boolean keepRunning;
 
     public Queue(int index, ActorRef baggageScanner, ActorRef bodyScanner) {
         this.index = index;
@@ -48,18 +53,34 @@ public class Queue extends UntypedActor {
     		}
     	}
     	else if(message instanceof Next){
+            final Object msg = waitQueue.remove();
     		if(!waitQueue.isEmpty()){
-    			bodyScanner.tell(waitQueue.remove());
+    			bodyScanner.tell(msg);
+                if(msg instanceof Close) getContext().stop();
     		}
     		else{
-    			scannerReady=true;
-    		}
+    			scannerReady = true;
+    		} 
     	}
-    	else if(message instanceof Close){
-    		baggageScanner.tell(message);
-    		bodyScanner.tell(message);
-    		getContext().stop();
+    	else if(message instanceof Close) {
+            baggageScanner.tell(message);
+            if(waitQueue.isEmpty()) {
+                bodyScanner.tell(message);
+                getContext().stop();
+            } else {
+                waitQueue.add(message);
+            }
+
     	}
 
+    }
+
+    /**
+     * For setting the body scanner (cyclic dep). Only works if null
+     * @param bodyScanner the body scanner
+     */
+    public void setBodyScanner(ActorRef bodyScanner) {
+       if(this.bodyScanner == null)
+            this.bodyScanner = bodyScanner;
     }
 }

@@ -31,11 +31,18 @@ public class SecurityStation extends UntypedActor {
     public void onReceive(final Object message) {
         if(message instanceof Report) {
             final Report r = (Report)message;
-            if(reports.containsKey(r.p)) {
-                System.out.println(r.p + " leaves the Security Area");
+
+            System.out.println("      Security " + index + ": " + r.p.name + " report received " +
+                    ( r.b ? "(pass)" : "(fail)" ));
+
+            if(reports.containsKey(r.p) && ((Report)message).b && reports.get(r.p).b) {
+                System.out.println("      Security " + index + ": " + r.p + " (pass/pass) released to airport");
                 reports.remove(r.p);
+            } else if (!reports.containsKey(r.p)) {
+                reports.put(r.p, r);                
             } else {
-                reports.put(r.p, r);
+                System.out.println("      Security " + index + ": " + r.p.name + "sent to jail");
+                jail.tell(r.p);
             }
         } else if (message instanceof Close) {
             keepRunning = false;
