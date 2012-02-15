@@ -27,6 +27,7 @@ public abstract class Scanner extends UntypedActor {
                 securityStation.tell(
                         new Report((Passenger)message, false));
             }
+			this.performPostScan();
         }
         if(message instanceof Close) {
             securityStation.tell(message);

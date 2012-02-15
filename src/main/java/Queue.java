@@ -47,7 +47,7 @@ public class Queue extends UntypedActor {
     			waitQueue.add((Passenger)message);
     		}
     	}
-    	else if(message instanceof String){
+    	else if(message instanceof Next){
     		if(!waitQueue.isEmpty()){
     			bodyScanner.tell(waitQueue.remove());
     		}
