@@ -3,7 +3,7 @@ import static java.lang.Math.* ;
 import java.util.List;
 
 /**
- * @author ian hunt
+ * @author Zach Masiello
  * @date 2/8/12
  *
  * Passengers are passed in from the main driver program as messages.
@@ -13,20 +13,28 @@ import java.util.List;
  * after which the document check actor terminates [with getContext().stop()].
  */
 public class DocumentChecker extends UntypedActor {
-
+	
     final List<Queue> lineQueues;
-
+	
 	private int i = 0;
 	
     public DocumentChecker(List<Queue> lineQueues) {
         this.lineQueues = lineQueues;
     }
 	
+	/**
+	* If it receives a passenger then they have
+	* a 80% chance to pass, other wise they're sent 
+	* away.  If they pass then they go on to the next
+	* Queue.
+	* If it gets a Close message then it passes it
+	* on to the queues and then stop's itself
+	*/
 	public void onReceive(final Object message)
 	{
 		if(message instanceof Passenger)
 		{
-			if((int)(random() * 100) <=20)
+			if((int)(random() * 100) <=20) //20% chance to be sent away
 			{
 				System.out.println("Passenger: " + (Passenger)message.name + "has been sent away");
 			}
