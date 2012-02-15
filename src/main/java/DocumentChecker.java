@@ -22,14 +22,6 @@ public class DocumentChecker extends UntypedActor {
         this.lineQueues = lineQueues;
     }
 	
-	/**
-	* If it receives a passenger then they have
-	* a 80% chance to pass, other wise they're sent 
-	* away.  If they pass then they go on to the next
-	* Queue.
-	* If it gets a Close message then it passes it
-	* on to the queues and then stop's itself
-	*/
 	public void onReceive(final Object message)
 	{
 		if(message instanceof Passenger)
