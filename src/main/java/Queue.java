@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class Queue extends UntypedActor {
     
+    private final String name;
     final int index;
     final ActorRef baggageScanner;
     
@@ -38,13 +39,18 @@ public class Queue extends UntypedActor {
         this.baggageScanner = baggageScanner;
         this.bodyScanner = bodyScanner;
         scannerReady = true;
-        waitQueue = new LinkedList<Passenger>();
+        waitQueue = new LinkedList<Object>();
+        this.name = "  Queue " + index + ": ";
+        
     }
 
     public void onReceive(final Object message) {
-    	if(message instanceof Passenger){
+    	if(message instanceof Passenger) {
+            System.out.println(name + ((Passenger) message).name + " arrives in line.");
     		baggageScanner.tell(message);
+            System.out.println(name + ((Passenger) message).name + " baggage placed on scanner");
     		if(scannerReady){
+                System.out.println(name + ((Passenger) message).name + " enters body scanner");
     			bodyScanner.tell(message);
     			scannerReady=false;
     		}
@@ -55,24 +61,36 @@ public class Queue extends UntypedActor {
     	else if(message instanceof Next){
             final Object msg = waitQueue.remove();
     		if(!waitQueue.isEmpty()){
+                System.out.println(name + ((Passenger) message).name + " enters body scanner");
     			bodyScanner.tell(msg);
-                if(msg instanceof Close) getContext().stop();
+
+                if(msg instanceof Close)
+                    closeOut(message);
+
     		}
     		else{
     			scannerReady = true;
     		} 
     	}
     	else if(message instanceof Close) {
+            System.out.println(name + "Close received");
             baggageScanner.tell(message);
+            System.out.println(name + "Close sent to baggage scanner");
             if(waitQueue.isEmpty()) {
-                bodyScanner.tell(message);
-                getContext().stop();
+                closeOut(message);
             } else {
                 waitQueue.add(message);
             }
 
     	}
 
+    }
+    
+    private void closeOut(Object message) {
+        bodyScanner.tell(message);
+        System.out.println(name + "Close sent to body scanner");
+        getContext().stop();
+        System.out.println(name + "Closed");
     }
 
     /**

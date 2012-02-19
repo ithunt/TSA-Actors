@@ -17,7 +17,9 @@ import java.util.Map;
  *  When this condition is met, the station sends a “close” message to the jail and stops itself.
  */
 public class SecurityStation extends UntypedActor {
-    
+
+    private final String name;
+
     final int index;
     final ActorRef jail;
     final Map<Passenger, Report> reports = new HashMap<Passenger, Report>();
@@ -26,28 +28,40 @@ public class SecurityStation extends UntypedActor {
     public SecurityStation(int index, ActorRef jail) {
         this.index = index;
         this.jail = jail;
+        this.name = "      Security " + index + ": ";
     }
 
     public void onReceive(final Object message) {
         if(message instanceof Report) {
             final Report r = (Report)message;
 
-            System.out.println("      Security " + index + ": " + r.p.name + " report received " +
+            System.out.println( name + r.p.name + " report received " +
                     ( r.b ? "(pass)" : "(fail)" ));
 
             if(reports.containsKey(r.p) && ((Report)message).b && reports.get(r.p).b) {
-                System.out.println("      Security " + index + ": " + r.p + " (pass/pass) released to airport");
+                System.out.println(name + r.p + " (pass/pass) released to airport");
                 reports.remove(r.p);
             } else if (!reports.containsKey(r.p)) {
                 reports.put(r.p, r);                
             } else {
-                System.out.println("      Security " + index + ": " + r.p.name + "sent to jail");
+                final Report r2 = reports.remove(r.p);
+                System.out.println(name + r.p.name + " (" +
+                        (r.b ? "pass" : "fail") + "/" +
+                        (r2.b ? "pass" : "fail" ) +") sent to jail");
                 jail.tell(r.p);
             }
         } else if (message instanceof Close) {
-            keepRunning = false;
+            if(keepRunning) {
+                keepRunning = false;
+                System.out.println(name + "Close received (1 of 2 scanners)");
+                
+            } else {
+                System.out.println(name + "Close received (2 of 2 scanners)");
+                System.out.println(name + "Close sent to jail");
+                jail.tell(message);
+                getContext().stop();
+                System.out.println(name + "Closed");        
+            }
         }
-
-        if(!keepRunning && reports.isEmpty()) getContext().stop();
     }
 }

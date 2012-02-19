@@ -19,12 +19,17 @@ public class BaggageScanner extends Scanner{
 
     @Override
     String getPrintableMessage() {
-        return null;
+        return "    Baggage Scan " + index + ": ";
+    }
+
+    @Override
+    String getPrintableMessage(Passenger p) {
+        return getPrintableMessage() + p.name + " baggage";
     }
 
 	@Override
 	protected void performPostScan() {
-			
+		//nothing for baggage
 	}
 
 }

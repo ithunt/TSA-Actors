@@ -11,6 +11,7 @@ import akka.actor.UntypedActor;
  * When a â€œcloseâ€� message is received, it is sent on to the security station and the body scan actor stops itself.
  */
 public class BodyScanner extends Scanner {
+
 	protected ActorRef parentQueue;
     public BodyScanner(int index, ActorRef securityStation, ActorRef parentQueue) {
         super(index, securityStation);
@@ -19,12 +20,18 @@ public class BodyScanner extends Scanner {
 
     @Override
     String getPrintableMessage() {
-        return null;
+        return "    Body Scan " + index + ": ";
+    }
+
+    @Override
+    String getPrintableMessage(Passenger p) {
+        return getPrintableMessage() + p.name;
     }
 
 	@Override
 	protected void performPostScan() {
 		parentQueue.tell(new Next());
+        System.out.println(getPrintableMessage() + "Next passenger");
 	}
 
 

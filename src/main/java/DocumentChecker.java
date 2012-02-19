@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * @author Zach Masiello
+ * @author ian hunt
  * @date 2/8/12
  *
  * Passengers are passed in from the main driver program as messages.
@@ -15,6 +16,8 @@ import java.util.List;
  */
 public class DocumentChecker extends UntypedActor {
 	
+    private static final String name = "Document Check: ";
+    
     final List<ActorRef> lineQueues;
 	
 	private int i = 0;
@@ -27,18 +30,16 @@ public class DocumentChecker extends UntypedActor {
 	{
 		if(message instanceof Passenger)
 		{
+            System.out.println(name + ((Passenger) message).name + " arrives");
 			if((int)(random() * 100) <=20) //20% chance to be sent away
-			{
-				System.out.println("Passenger: " + ((Passenger) message).name + "has been sent away");
-			}
+				System.out.println(name + ((Passenger) message).name + " turned away");
 			else
 			{
-				System.out.println("Passenger: " + ((Passenger) message).name + "has passed Document Check");
-				lineQueues.get(i % lineQueues.size()).tell(message);
+                final int line = i % lineQueues.size();
+				System.out.println(name + ((Passenger) message).name + " sent to line " + line);
+				lineQueues.get(line).tell(message);
 				i++;
 			}
-			
-			
 		}
 		else if(message instanceof Close)
 		{
@@ -46,7 +47,9 @@ public class DocumentChecker extends UntypedActor {
 			{
 				q.tell(message);
 			}
+            System.out.println(name + "Close sent");
             getContext().stop();
+            System.out.println(name + "Closed");
 		}
 	}
 }

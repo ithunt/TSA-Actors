@@ -13,6 +13,8 @@ import java.util.List;
  */
 public class Jail extends UntypedActor{
     
+    private final static String name = "        Jail: ";
+    
     final int securityStations;
     final List<Passenger> inmates = new ArrayList<Passenger>();
     
@@ -23,12 +25,21 @@ public class Jail extends UntypedActor{
     }
 
     public void onReceive(final Object message) {
-        if(message instanceof Passenger)
+        if(message instanceof Passenger) {
+            System.out.println(name + ((Passenger) message).name + " jailed.");
             inmates.add((Passenger)message);
+        }
         if(message instanceof Close) {
             closeReceived++;
-            if(closeReceived == securityStations)
+            System.out.println(name + "Close received (" + closeReceived + " of " + securityStations + " lines)");
+            if(closeReceived == securityStations) {
+                System.out.println(name + "Incarcerated Passengers");
+                for(Passenger p : inmates)
+                    System.out.println("              " + p.name);
+                System.out.println(name + "Closed");
                 getContext().stop();
+            }
+                
         }
     }
 }

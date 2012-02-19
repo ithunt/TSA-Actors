@@ -16,26 +16,34 @@ public abstract class Scanner extends UntypedActor {
     }
     
     public void onReceive(final Object message) {
-        //print i recieved something
+
         if(message instanceof Passenger) {
+            final Passenger p = (Passenger)message;
+            System.out.println(getPrintableMessage(p) + " enters");
             if(Math.random() >= FAIL_PROBABILITY) {
-                //print i passed it
+
+                System.out.println(getPrintableMessage(p) + " passes");
                 securityStation.tell(
                         new Report((Passenger)message, true));
             } else {
-                //print i failed it
+
+                System.out.println(getPrintableMessage(p) + " fails");
                 securityStation.tell(
                         new Report((Passenger)message, false));
             }
-			this.performPostScan();
+			performPostScan();
         }
         if(message instanceof Close) {
+            System.out.println(getPrintableMessage() + "Close received");
             securityStation.tell(message);
+            System.out.println(getPrintableMessage() + "Close sent to security");
             getContext().stop();
+            System.out.println(getPrintableMessage() + "Closed");
+            
         }
     }
-    
     abstract String getPrintableMessage();
+    abstract String getPrintableMessage(Passenger p);
     protected abstract void performPostScan();
 
 }
