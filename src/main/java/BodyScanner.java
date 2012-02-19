@@ -12,10 +12,8 @@ import akka.actor.UntypedActor;
  */
 public class BodyScanner extends Scanner {
 
-	protected ActorRef parentQueue;
-    public BodyScanner(int index, ActorRef securityStation, ActorRef parentQueue) {
+    public BodyScanner(int index, ActorRef securityStation) {
         super(index, securityStation);
-        this.parentQueue = parentQueue;
     }
 
     @Override
@@ -30,7 +28,7 @@ public class BodyScanner extends Scanner {
 
 	@Override
 	protected void performPostScan() {
-		parentQueue.tell(new Next());
+        getContext().getSender().get().tell(new Next());
         System.out.println(getPrintableMessage() + "Next passenger");
 	}
 

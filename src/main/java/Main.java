@@ -13,7 +13,7 @@ import static akka.actor.Actors.actorOf;
  */
 public class Main {
     
-    public static final int NUM_LINES = 3;
+    public static final int NUM_LINES = 1;
     public static final int NUM_PASSENGERS = 5;
     
     public static void main(final String[] args) 
@@ -59,7 +59,7 @@ public class Main {
 				{
 					public UntypedActor create()
 					{
-						return new BodyScanner(l.index, l.security, l.queue);
+						return new BodyScanner(l.index, l.security);
 					}
 				}
 			);
@@ -72,6 +72,8 @@ public class Main {
 					}
 				}
 			);
+
+
 			lines.add(l);
             queues.add(l.queue);
 		}

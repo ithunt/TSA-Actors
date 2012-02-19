@@ -27,7 +27,7 @@ public class Queue extends UntypedActor {
     final int index;
     final ActorRef baggageScanner;
     
-    ActorRef bodyScanner;
+    final ActorRef bodyScanner;
     protected boolean scannerReady;
     //Using linked list to use remove() method without parameters
     protected LinkedList<Object> waitQueue;
@@ -51,7 +51,7 @@ public class Queue extends UntypedActor {
             System.out.println(name + ((Passenger) message).name + " baggage placed on scanner");
     		if(scannerReady){
                 System.out.println(name + ((Passenger) message).name + " enters body scanner");
-    			bodyScanner.tell(message);
+    			bodyScanner.tell(message, getContext());
     			scannerReady=false;
     		}
     		else{
@@ -61,8 +61,8 @@ public class Queue extends UntypedActor {
     	else if(message instanceof Next){
             final Object msg = waitQueue.remove();
     		if(!waitQueue.isEmpty()){
-                System.out.println(name + ((Passenger) message).name + " enters body scanner");
-    			bodyScanner.tell(msg);
+                System.out.println(name + ((Passenger) msg).name + " enters body scanner");
+    			bodyScanner.tell(msg, getContext());
 
                 if(msg instanceof Close)
                     closeOut(message);
@@ -91,14 +91,5 @@ public class Queue extends UntypedActor {
         System.out.println(name + "Close sent to body scanner");
         getContext().stop();
         System.out.println(name + "Closed");
-    }
-
-    /**
-     * For setting the body scanner (cyclic dep). Only works if null
-     * @param bodyScanner the body scanner
-     */
-    public void setBodyScanner(ActorRef bodyScanner) {
-       if(this.bodyScanner == null)
-            this.bodyScanner = bodyScanner;
     }
 }
