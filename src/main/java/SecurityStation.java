@@ -39,7 +39,7 @@ public class SecurityStation extends UntypedActor {
                     ( r.b ? "(pass)" : "(fail)" ));
 
             if(reports.containsKey(r.p) && ((Report)message).b && reports.get(r.p).b) {
-                System.out.println(name + r.p + " (pass/pass) released to airport");
+                System.out.println(name + r.p.name + " (pass/pass) released to airport");
                 reports.remove(r.p);
             } else if (!reports.containsKey(r.p)) {
                 reports.put(r.p, r);                
