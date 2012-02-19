@@ -59,16 +59,15 @@ public class Queue extends UntypedActor {
     		}
     	}
     	else if(message instanceof Next){
-            final Object msg = waitQueue.remove();
     		if(!waitQueue.isEmpty()){
-                System.out.println(name + ((Passenger) msg).name + " enters body scanner");
-    			bodyScanner.tell(msg, getContext());
-
+                final Object msg = waitQueue.remove();
                 if(msg instanceof Close)
-                    closeOut(message);
-
-    		}
-    		else{
+                    closeOut(msg);
+                else {
+                    System.out.println(name + ((Passenger) msg).name + " enters body scanner");
+                    bodyScanner.tell(msg, getContext());
+                }
+    		} else{
     			scannerReady = true;
     		} 
     	}
