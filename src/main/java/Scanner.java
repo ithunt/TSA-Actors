@@ -4,6 +4,9 @@ import akka.actor.UntypedActor;
 /**
  * @author ian hunt
  * @date 2/8/12
+ *	Abstract Class for Baggage and Body Scanners since they do basically the same
+ * 	thing. Only differences are different print outs and the BodyScanner has a 
+ *  performPostScan Method that tells the Queue it can scan another passenger
  */
 public abstract class Scanner extends UntypedActor {
     final int index;
