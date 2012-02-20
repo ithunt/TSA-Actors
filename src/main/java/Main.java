@@ -13,8 +13,8 @@ import static akka.actor.Actors.actorOf;
  */
 public class Main {
     
-    public static final int NUM_LINES = 1;
-    public static final int NUM_PASSENGERS = 5;
+    public static final int NUM_LINES = 3;
+    public static final int NUM_PASSENGERS = 3;
     
     public static void main(final String[] args) 
 	{

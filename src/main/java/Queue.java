@@ -24,15 +24,13 @@ import java.util.List;
 public class Queue extends UntypedActor {
     
     private final String name;
-    final int index;
-    final ActorRef baggageScanner;
-    
-    final ActorRef bodyScanner;
+    private final int index;
+    private final ActorRef baggageScanner;
+    private final ActorRef bodyScanner;
+
     protected boolean scannerReady;
-    //Using linked list to use remove() method without parameters
+    //Using linked list to use remove() method without parameters (not present in list;
     protected LinkedList<Object> waitQueue;
-    
-    protected boolean keepRunning;
 
     public Queue(int index, ActorRef baggageScanner, ActorRef bodyScanner) {
         this.index = index;
@@ -54,9 +52,9 @@ public class Queue extends UntypedActor {
     			bodyScanner.tell(message, getContext());
     			scannerReady=false;
     		}
-    		else{
+    		else
     			waitQueue.add((Passenger)message);
-    		}
+
     	}
     	else if(message instanceof Next){
     		if(!waitQueue.isEmpty()){
@@ -75,16 +73,20 @@ public class Queue extends UntypedActor {
             System.out.println(name + "Close received");
             baggageScanner.tell(message);
             System.out.println(name + "Close sent to baggage scanner");
-            if(waitQueue.isEmpty()) {
+            if(waitQueue.isEmpty())
                 closeOut(message);
-            } else {
+            else
                 waitQueue.add(message);
-            }
+
 
     	}
 
     }
-    
+
+    /**
+     * Final clean up. Notify body scanner, stop
+     * @param message
+     */
     private void closeOut(Object message) {
         bodyScanner.tell(message);
         System.out.println(name + "Close sent to body scanner");
