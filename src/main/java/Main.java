@@ -13,7 +13,11 @@ import static akka.actor.Actors.actorOf;
  */
 public class Main {
     
-    public static final int NUM_LINES = 3;
+	//Determines the number of lines within the system
+    public static final int NUM_LINES = 3;		
+    
+    //Determines the number of passengers that will go through
+    //the system.
     public static final int NUM_PASSENGERS = 3;
     
     public static void main(final String[] args) 
